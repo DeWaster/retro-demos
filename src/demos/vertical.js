@@ -1,8 +1,8 @@
 /* Vertical lines Demo
  *
- * 
+ *
  * Huge thanks to this jsfiddle https://jsfiddle.net/epistemex/2w2u1rLg/
- * 
+ *
  *      /\
  *     /  \/\
  * ___/______\___________________________________________________
@@ -12,6 +12,9 @@
  * /__/___/____/_____/_________|________\_____\_____\____\___\__\_\\
  *   /   /    /     /          |         \     \     \    \   \  \ \\
  */
+import * as PIXI from "pixi.js";
+import * as filters from "pixi-filters";
+
 class VerticalLines {
   constructor(screenWidth, screenHeight, app) {
     this.app = app;
@@ -20,7 +23,7 @@ class VerticalLines {
     this.screenCentre = {
       x: this.width / 2,
       y: this.height / 2
-    }
+    };
     this.sprites = {};
 
     // Grid specific stuff
@@ -36,31 +39,33 @@ class VerticalLines {
 
     this.horizontalGrid = [];
     this.verticalGrid = [];
-   
+
     this.graphics = new PIXI.Graphics();
-    
+
     // Glowfilter for the lines
-    const glowFilter = new PIXI.filters.GlowFilter(12, 8, 0, 0x00004c, 0.1);
-    this.graphics.filters = [
-      glowFilter
-    ];
+    const glowFilter = new filters.GlowFilter(12, 8, 0, 0x00004c, 0.1);
+    this.graphics.filters = [glowFilter];
   }
 
   init() {
     this.horizonY = this._rotateX(0, -this.grid)[1];
 
     // Get textures
-    this.skylineTexture = this.sprites['skylineTexture'];
-    this.skylineTexture2 = this.sprites['skylineTexture2'];
-    this.moon = this.sprites['moon'];
+    this.skylineTexture = this.sprites["skylineTexture"];
+    this.skylineTexture2 = this.sprites["skylineTexture2"];
+    this.moon = this.sprites["moon"];
 
     // Create tilingsprites
-    this.backgroundCity = new PIXI.TilingSprite(this.skylineTexture,  3298, 320);
+    this.backgroundCity = new PIXI.TilingSprite(this.skylineTexture, 3298, 320);
     this.backgroundCity.y = this.horizonY - 320;
     this.backgroundCity.tilePosition.x = 0;
     this.backgroundCity.tilePosition.y = -1;
 
-    this.backgroundCity2 = new PIXI.TilingSprite(this.skylineTexture2,  2000, 244);
+    this.backgroundCity2 = new PIXI.TilingSprite(
+      this.skylineTexture2,
+      2000,
+      244
+    );
     this.backgroundCity2.y = this.horizonY - 250;
 
     this.backgroundCity2.tilePosition.x = 0;
@@ -72,31 +77,32 @@ class VerticalLines {
 
     let p1, p2;
     // Create vertical grid
-    for(let i = -this.grid; i <= this.grid; i++) {
+    for (let i = -this.grid; i <= this.grid; i++) {
       p1 = this._rotateX(i, -this.grid);
       p2 = this._rotateX(i, this.grid);
       this.verticalGrid.push([p1, p2]);
     }
 
     // Create horizontal grid
-    for(let i = -this.grid; i <= this.grid; i++) {
+    for (let i = -this.grid; i <= this.grid; i++) {
       p1 = this._rotateX(-this.grid, i);
       p2 = this._rotateX(this.grid, i);
       this.horizontalGrid.push([p1, p2]);
     }
-    const glowFilter = new PIXI.filters.GlowFilter(20, 3, 0, 0x800080, 0.2);
   }
 
   start() {
     // Remove all children from the stage
-    for (var i = this.app.stage.children.length - 1; i >= 0; i--) {	this.app.stage.removeChild(this.app.stage.children[i]);};
+    for (var i = this.app.stage.children.length - 1; i >= 0; i--) {
+      this.app.stage.removeChild(this.app.stage.children[i]);
+    }
     this.app.stage.addChild(this.moon);
     this.app.stage.addChild(this.backgroundCity2);
     this.app.stage.addChild(this.graphics);
     this.app.stage.addChild(this.backgroundCity);
   }
 
-  /* This method is missing from other demos. It's basically just a way to re-initialize 
+  /* This method is missing from other demos. It's basically just a way to re-initialize
    * width and height variables without messing with other ongoing stuff
    */
   resize(screenWidth, screenHeight) {
@@ -106,10 +112,10 @@ class VerticalLines {
     this.screenCentre = {
       x: this.width / 2,
       y: this.height / 2
-    }
+    };
     this.fov = this.width;
     this.horizonY = this._rotateX(0, -this.grid)[1];
-    
+
     this.backgroundCity.y = this.horizonY - 324;
     this.backgroundCity2.y = this.horizonY - 250;
 
@@ -121,26 +127,25 @@ class VerticalLines {
     let p1, p2;
 
     // Create vertical grid
-    for(let i = -this.grid; i <= this.grid; i++) {
+    for (let i = -this.grid; i <= this.grid; i++) {
       p1 = this._rotateX(i, -this.grid);
       p2 = this._rotateX(i, this.grid);
       this.verticalGrid.push([p1, p2]);
     }
 
     // Create horizontal grid
-    for(let i = -this.grid; i <= this.grid; i++) {
+    for (let i = -this.grid; i <= this.grid; i++) {
       p1 = this._rotateX(-this.grid, i);
       p2 = this._rotateX(this.grid, i);
       this.horizontalGrid.push([p1, p2]);
     }
-
-  } 
+  }
 
   draw() {
     this.graphics.clear();
     // Draw vertical grid
     this.graphics.lineStyle(2, 0x800080, 1);
-    for(let i = 0; i < this.verticalGrid.length; i++) {
+    for (let i = 0; i < this.verticalGrid.length; i++) {
       const line = this.verticalGrid[i];
 
       this.graphics.moveTo(line[0][0], line[0][1]);
@@ -148,7 +153,7 @@ class VerticalLines {
     }
 
     // Draw horizontal lines
-    for(let i = 0; i < this.verticalGrid.length; i++) {
+    for (let i = 0; i < this.verticalGrid.length; i++) {
       const line = this.horizontalGrid[i];
 
       this.graphics.moveTo(line[0][0], line[0][1]);
@@ -161,10 +166,10 @@ class VerticalLines {
   }
 
   update() {
-    this.backgroundCity.tilePosition.x += (this.speedX * 10);
-    this.backgroundCity2.tilePosition.x += (this.speedX * 5);
+    this.backgroundCity.tilePosition.x += this.speedX * 10;
+    this.backgroundCity2.tilePosition.x += this.speedX * 5;
 
-    this.moon.x +=  (this.speedX * 3);
+    this.moon.x += this.speedX * 3;
 
     this.horizontalGrid = [];
     this.verticalGrid = [];
@@ -178,18 +183,18 @@ class VerticalLines {
     this.gridX += this.speedX;
     if (this.gridX >= 1 || this.gridX <= -1) {
       this.gridX = 0;
-    } 
+    }
 
     let p1, p2;
     // Create vertical grid
-    for(let i = -this.grid; i <= this.grid; i++) {
+    for (let i = -this.grid; i <= this.grid; i++) {
       p1 = this._rotateX(i + this.gridX, -this.grid);
       p2 = this._rotateX(i + this.gridX, this.grid);
       this.verticalGrid.push([p1, p2]);
     }
 
     // Create horizontal grid
-    for(let i = -this.grid; i <= this.grid; i++) {
+    for (let i = -this.grid; i <= this.grid; i++) {
       p1 = this._rotateX(-this.grid, i + this.gridY);
       p2 = this._rotateX(this.grid, i + this.gridY);
       this.horizontalGrid.push([p1, p2]);
@@ -214,14 +219,14 @@ class VerticalLines {
     this.verticalGrid = [];
     let p1, p2;
     // Create vertical grid
-    for(let i = -this.grid; i <= this.grid; i++) {
+    for (let i = -this.grid; i <= this.grid; i++) {
       p1 = this._rotateX(i, -this.grid);
       p2 = this._rotateX(i, this.grid);
       this.verticalGrid.push([p1, p2]);
     }
 
     // Create horizontal grid
-    for(let i = -this.grid; i <= this.grid; i++) {
+    for (let i = -this.grid; i <= this.grid; i++) {
       p1 = this._rotateX(-this.grid, i);
       p2 = this._rotateX(this.grid, i);
       this.horizontalGrid.push([p1, p2]);
@@ -229,7 +234,7 @@ class VerticalLines {
   }
 
   _rotateX(x, y) {
-    const radianAngles = this.angle * Math.PI / 180;
+    const radianAngles = (this.angle * Math.PI) / 180;
     const cosAngle = Math.cos(radianAngles);
     const sinAngle = Math.sin(radianAngles);
 
@@ -238,7 +243,7 @@ class VerticalLines {
 
     const f = this.fov / (this.viewDist + rz);
     x = x * f + this.screenCentre.x;
-    y = ry * f + this.screenCentre.y + (this.screenCentre.y / 2);
+    y = ry * f + this.screenCentre.y + this.screenCentre.y / 2;
 
     return [x, y];
   }
