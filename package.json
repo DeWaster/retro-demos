@@ -16,6 +16,7 @@
     "imagemin-pngquant": "^8.0.0",
     "less": "^3.10.3",
     "less-plugin-autoprefix": "^1.5.1",
+    "parcel-bundler": "^1.12.4",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0"
   },
